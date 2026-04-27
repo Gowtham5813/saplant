@@ -102,7 +102,7 @@ const Auth = () => {
           </p>
         </div>
         <div className="relative text-xs text-primary-foreground/50 uppercase tracking-widest">
-          SaplingRewards · est. 2026
+          Saplant · est. 2026
         </div>
       </div>
 
