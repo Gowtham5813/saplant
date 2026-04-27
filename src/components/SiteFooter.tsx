@@ -8,7 +8,7 @@ export const SiteFooter = () => (
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-forest">
             <Sprout className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-serif text-lg">SaplingRewards</span>
+          <span className="font-serif text-lg">Saplant</span>
         </div>
         <p className="text-sm text-muted-foreground text-center">
           Restoring the planet, one sapling at a time. © {new Date().getFullYear()}
