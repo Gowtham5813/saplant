@@ -2,95 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* SaplingRewards — Forest & Moss design system. All colors in HSL. */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Forest & Moss palette translated to HSL */
+    --background: 60 33% 97%;          /* warm cream */
+    --foreground: 145 38% 14%;         /* deep forest */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 60 30% 99%;
+    --card-foreground: 145 38% 14%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 60 30% 99%;
+    --popover-foreground: 145 38% 14%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand */
+    --primary: 145 38% 14%;            /* deep forest #1a3c2a */
+    --primary-foreground: 60 33% 97%;
+    --primary-glow: 144 33% 26%;       /* moss #2d5a3d */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 100 19% 75%;          /* light sage #a0c49d */
+    --secondary-foreground: 145 38% 14%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 80 18% 92%;
+    --muted-foreground: 145 15% 35%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 122 21% 45%;             /* mid sage #5a8a5c */
+    --accent-foreground: 60 33% 97%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 12 65% 45%;
+    --destructive-foreground: 60 33% 97%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 100 15% 85%;
+    --input: 100 15% 88%;
+    --ring: 144 33% 26%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Surfaces */
+    --surface-cream: 48 42% 94%;
+    --surface-moss: 144 33% 26%;
+    --surface-forest: 145 38% 14%;
+    --surface-sage: 100 19% 75%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Gradients */
+    --gradient-forest: linear-gradient(135deg, hsl(145 38% 14%) 0%, hsl(144 33% 26%) 100%);
+    --gradient-moss: linear-gradient(160deg, hsl(144 33% 26%) 0%, hsl(122 21% 45%) 100%);
+    --gradient-sun: linear-gradient(180deg, hsl(48 42% 94%) 0%, hsl(60 33% 97%) 100%);
+    --gradient-overlay: linear-gradient(180deg, hsl(145 38% 14% / 0) 0%, hsl(145 38% 14% / 0.85) 100%);
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -8px hsl(145 38% 14% / 0.15);
+    --shadow-elevated: 0 20px 50px -20px hsl(145 38% 14% / 0.25);
+    --shadow-glow: 0 0 60px hsl(122 21% 45% / 0.3);
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    /* Motion */
+    --ease-organic: cubic-bezier(0.65, 0, 0.35, 1);
+    --transition-smooth: all 0.4s var(--ease-organic);
 
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 60 33% 97%;
+    --sidebar-foreground: 145 38% 14%;
+    --sidebar-primary: 145 38% 14%;
+    --sidebar-primary-foreground: 60 33% 97%;
+    --sidebar-accent: 80 18% 92%;
+    --sidebar-accent-foreground: 145 38% 14%;
+    --sidebar-border: 100 15% 85%;
+    --sidebar-ring: 144 33% 26%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 145 40% 6%;
+    --foreground: 60 30% 95%;
+    --card: 145 35% 9%;
+    --card-foreground: 60 30% 95%;
+    --popover: 145 35% 9%;
+    --popover-foreground: 60 30% 95%;
+    --primary: 100 19% 75%;
+    --primary-foreground: 145 38% 14%;
+    --primary-glow: 122 21% 55%;
+    --secondary: 144 33% 18%;
+    --secondary-foreground: 60 30% 95%;
+    --muted: 145 25% 14%;
+    --muted-foreground: 100 15% 65%;
+    --accent: 122 21% 45%;
+    --accent-foreground: 60 30% 95%;
+    --destructive: 12 65% 50%;
+    --destructive-foreground: 60 30% 95%;
+    --border: 145 25% 18%;
+    --input: 145 25% 18%;
+    --ring: 100 19% 75%;
   }
 }
 
@@ -99,7 +100,70 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-serif tracking-tight;
+    font-feature-settings: "ss01";
   }
 }
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-gradient-forest { background: var(--gradient-forest); }
+  .bg-gradient-moss { background: var(--gradient-moss); }
+  .bg-gradient-sun { background: var(--gradient-sun); }
+
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-elevated { box-shadow: var(--shadow-elevated); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+
+  .transition-organic { transition: var(--transition-smooth); }
+
+  /* Subtle grain overlay for organic feel */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.06;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+}
+
+@layer components {
+  .leaf-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+  }
+}
+
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(2deg) translateY(-4px); }
+}
+
+@keyframes grow-in {
+  0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-leaf-sway { animation: leaf-sway 6s ease-in-out infinite; }
+.animate-grow-in { animation: grow-in 0.7s var(--ease-organic) both; }
+.animate-fade-up { animation: fade-up 0.6s var(--ease-organic) both; }
