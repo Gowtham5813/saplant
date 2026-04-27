@@ -24,7 +24,7 @@ export const SiteHeader = () => {
             <Sprout className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-serif text-xl font-semibold tracking-tight">
-            Sapling<span className="text-primary-glow">Rewards</span>
+            Sap<span className="text-primary-glow">lant</span>
           </span>
         </Link>
 
@@ -40,6 +40,7 @@ export const SiteHeader = () => {
             <>
               <Link to="/app" className="text-muted-foreground hover:text-foreground transition-organic">Dashboard</Link>
               <Link to="/app/log" className="text-muted-foreground hover:text-foreground transition-organic">Log a planting</Link>
+              <Link to="/app/posts" className="text-muted-foreground hover:text-foreground transition-organic">Posts</Link>
               <Link to="/app/community" className="text-muted-foreground hover:text-foreground transition-organic">Community</Link>
             </>
           )}
