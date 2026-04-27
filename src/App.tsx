@@ -10,6 +10,7 @@ import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import LogPlanting from "./pages/LogPlanting.tsx";
 import Community from "./pages/Community.tsx";
+import Posts from "./pages/Posts.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/app" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/app/log" element={<ProtectedRoute><LogPlanting /></ProtectedRoute>} />
+            <Route path="/app/posts" element={<ProtectedRoute><Posts /></ProtectedRoute>} />
             <Route path="/app/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
