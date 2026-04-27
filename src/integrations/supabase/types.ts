@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      plantings: {
+        Row: {
+          created_at: string
+          id: string
+          location: string
+          notes: string | null
+          photo_url: string | null
+          planted_at: string
+          points_earned: number
+          shared: boolean
+          species: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location: string
+          notes?: string | null
+          photo_url?: string | null
+          planted_at?: string
+          points_earned?: number
+          shared?: boolean
+          species: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string
+          notes?: string | null
+          photo_url?: string | null
+          planted_at?: string
+          points_earned?: number
+          shared?: boolean
+          species?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          id: string
+          total_points: number
+          total_saplings: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+          total_points?: number
+          total_saplings?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          total_points?: number
+          total_saplings?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
