@@ -16,16 +16,14 @@ Object.defineProperty(window, "matchMedia", {
 
 // JSDOM doesn't implement these but components may call them
 if (!window.URL.createObjectURL) {
-  // @ts-expect-error - test shim
-  window.URL.createObjectURL = () => "blob:mock";
+  (window.URL as unknown as { createObjectURL: (f: unknown) => string }).createObjectURL = () => "blob:mock";
 }
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
 // PointerEvent missing methods used by Radix
 if (!Element.prototype.hasPointerCapture) {
-  // @ts-expect-error - test shim
-  Element.prototype.hasPointerCapture = () => false;
+  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () => false;
 }
 if (!Element.prototype.releasePointerCapture) {
   Element.prototype.releasePointerCapture = () => {};
