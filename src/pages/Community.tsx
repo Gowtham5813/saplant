@@ -53,16 +53,16 @@ const Community = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <SiteHeader />
 
-      <main className="flex-1 container py-10 md:py-14">
-        <div className="mb-10 animate-fade-up">
-          <p className="text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Community canopy</p>
-          <h1 className="mt-2 font-serif text-4xl md:text-5xl">Plantings from around the world.</h1>
+      <main className="flex-1 container py-8 sm:py-10 md:py-14">
+        <div className="mb-8 sm:mb-10 animate-fade-up">
+          <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Community canopy</p>
+          <h1 className="mt-2 font-serif text-3xl sm:text-4xl md:text-5xl">Plantings from around the world.</h1>
           <p className="mt-3 text-muted-foreground max-w-xl">Every entry is a real sapling. Cheer them on.</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Feed */}
-          <section className="lg:col-span-2">
+          <section className="lg:col-span-2 min-w-0">
             <h2 className="font-serif text-2xl mb-5">Latest plantings</h2>
             {loading ? (
               <p className="text-muted-foreground">Loading…</p>

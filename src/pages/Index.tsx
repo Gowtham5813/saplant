@@ -26,38 +26,38 @@ const Index = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-surface-forest/30 via-surface-forest/40 to-background" />
           </div>
 
-          <div className="container relative pt-24 pb-32 md:pt-36 md:pb-44">
+          <div className="container relative pt-16 pb-24 sm:pt-24 sm:pb-32 md:pt-36 md:pb-44">
             <div className="max-w-3xl animate-fade-up">
               <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
                 <Leaf className="h-3 w-3" /> Reforest. Reward. Repeat.
               </span>
-              <h1 className="mt-6 font-serif text-5xl md:text-7xl font-semibold leading-[1.05] text-primary-foreground text-balance">
+              <h1 className="mt-6 font-serif text-4xl sm:text-5xl md:text-7xl font-semibold leading-[1.05] text-primary-foreground text-balance">
                 Plant a sapling.<br />
                 <span className="italic text-secondary">Earn the planet's gratitude.</span>
               </h1>
-              <p className="mt-6 max-w-xl text-lg text-primary-foreground/90 leading-relaxed">
+              <p className="mt-6 max-w-xl text-base sm:text-lg text-primary-foreground/90 leading-relaxed">
                 Log every tree you plant, watch your impact grow, and join a community of green guardians turning small acts into lasting forests.
               </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                <Button asChild variant="forest" size="xl" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Button asChild variant="forest" size="xl" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto">
                   <Link to="/auth">
                     Start planting <ArrowRight className="ml-1" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+                <Button asChild variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary w-full sm:w-auto">
                   <a href="#how">How it works</a>
                 </Button>
               </div>
 
-              <div className="mt-14 grid grid-cols-3 gap-6 max-w-lg">
+              <div className="mt-10 sm:mt-14 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
                 {[
                   { v: "12k+", l: "Saplings logged" },
                   { v: "3.2k", l: "Active planters" },
                   { v: "84t", l: "CO₂ offset / yr" },
                 ].map((s) => (
                   <div key={s.l}>
-                    <div className="font-serif text-3xl md:text-4xl text-primary-foreground">{s.v}</div>
-                    <div className="text-xs uppercase tracking-wider text-primary-foreground/70 mt-1">{s.l}</div>
+                    <div className="font-serif text-2xl sm:text-3xl md:text-4xl text-primary-foreground">{s.v}</div>
+                    <div className="text-[10px] sm:text-xs uppercase tracking-wider text-primary-foreground/70 mt-1">{s.l}</div>
                   </div>
                 ))}
               </div>
@@ -66,21 +66,21 @@ const Index = () => {
         </section>
 
         {/* HOW IT WORKS */}
-        <section id="how" className="container py-24 md:py-32">
+        <section id="how" className="container py-16 sm:py-24 md:py-32">
           <div className="max-w-2xl">
             <span className="text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">How it works</span>
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl text-balance">
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl md:text-5xl text-balance">
               Three simple steps to a greener planet.
             </h2>
           </div>
-          <div className="mt-16 grid md:grid-cols-3 gap-8">
+          <div className="mt-10 sm:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-8">
             {[
               { n: "01", t: "Plant a sapling", d: "Anywhere — your backyard, a community garden, a reforestation site." },
               { n: "02", t: "Log it in seconds", d: "Snap the species, location, and date. We award you green points instantly." },
               { n: "03", t: "Climb the canopy", d: "Earn badges, unlock rewards, and inspire others in your community feed." },
             ].map((step, i) => (
               <div key={step.n} className="animate-grow-in" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="font-serif text-6xl text-primary-glow/30">{step.n}</div>
+                <div className="font-serif text-5xl sm:text-6xl text-primary-glow/30">{step.n}</div>
                 <h3 className="mt-4 font-serif text-2xl">{step.t}</h3>
                 <p className="mt-2 text-muted-foreground leading-relaxed">{step.d}</p>
               </div>
@@ -89,11 +89,11 @@ const Index = () => {
         </section>
 
         {/* BENTO GRID FEATURES */}
-        <section id="features" className="bg-surface-cream/60 py-24 md:py-32">
+        <section id="features" className="bg-surface-cream/60 py-16 sm:py-24 md:py-32">
           <div className="container">
-            <div className="max-w-2xl mb-16">
+            <div className="max-w-2xl mb-10 sm:mb-16">
               <span className="text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Everything you need</span>
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl text-balance">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl md:text-5xl text-balance">
                 A forest of features, rooted in your impact.
               </h2>
             </div>
@@ -165,17 +165,17 @@ const Index = () => {
         </section>
 
         {/* COMMUNITY CTA */}
-        <section id="community" className="container py-24 md:py-32">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-forest p-12 md:p-20 shadow-elevated grain">
+        <section id="community" className="container py-16 sm:py-24 md:py-32">
+          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-forest p-8 sm:p-12 md:p-20 shadow-elevated grain">
             <div className="relative max-w-2xl">
               <Sprout className="h-10 w-10 text-secondary animate-leaf-sway" />
-              <h2 className="mt-6 font-serif text-4xl md:text-6xl text-primary-foreground text-balance">
+              <h2 className="mt-6 font-serif text-3xl sm:text-4xl md:text-6xl text-primary-foreground text-balance">
                 Your first sapling is waiting.
               </h2>
-              <p className="mt-5 text-lg text-primary-foreground/80 max-w-xl">
+              <p className="mt-5 text-base sm:text-lg text-primary-foreground/80 max-w-xl">
                 Join thousands of planters quietly rebuilding the world's forests. Free to join. Free to plant.
               </p>
-              <Button asChild size="xl" className="mt-10 bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <Button asChild size="xl" className="mt-8 sm:mt-10 bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto">
                 <Link to="/auth">
                   Create your free account <ArrowRight className="ml-1" />
                 </Link>
