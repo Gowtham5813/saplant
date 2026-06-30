@@ -59,54 +59,54 @@ const Dashboard = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <SiteHeader />
 
-      <main className="flex-1 container py-10 md:py-14">
+      <main className="flex-1 container py-8 sm:py-10 md:py-14">
         {/* Greeting */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 animate-fade-up">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 animate-fade-up">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Your canopy</p>
-            <h1 className="mt-2 font-serif text-4xl md:text-5xl">
+            <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Your canopy</p>
+            <h1 className="mt-2 font-serif text-3xl sm:text-4xl md:text-5xl break-words">
               Hello, {profile?.display_name ?? "Planter"}.
             </h1>
             <p className="mt-2 text-muted-foreground">Here's how your forest is growing.</p>
           </div>
-          <Button asChild variant="forest" size="lg">
+          <Button asChild variant="forest" size="lg" className="w-full md:w-auto">
             <Link to="/app/log"><Plus className="h-4 w-4" /> Log a planting</Link>
           </Button>
         </div>
 
         {/* Stat bento */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-5 auto-rows-[minmax(160px,auto)] mb-10">
-          <div className="md:col-span-2 rounded-3xl bg-gradient-forest p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-5 auto-rows-[minmax(160px,auto)] mb-10">
+          <div className="md:col-span-2 rounded-3xl bg-gradient-forest p-6 sm:p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden">
             <div className="relative">
               <Sprout className="h-7 w-7 text-secondary" />
-              <div className="mt-6 font-serif text-6xl">{totalSaplings}</div>
-              <div className="text-sm uppercase tracking-wider text-primary-foreground/70 mt-1">Saplings planted</div>
+              <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{totalSaplings}</div>
+              <div className="text-xs sm:text-sm uppercase tracking-wider text-primary-foreground/70 mt-1">Saplings planted</div>
             </div>
           </div>
 
-          <div className="md:col-span-2 rounded-3xl bg-card border border-border p-7 shadow-soft">
+          <div className="md:col-span-2 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft">
             <Trophy className="h-7 w-7 text-primary-glow" />
-            <div className="mt-6 font-serif text-6xl">{profile?.total_points ?? 0}</div>
-            <div className="text-sm uppercase tracking-wider text-muted-foreground mt-1">Green points</div>
+            <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{profile?.total_points ?? 0}</div>
+            <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground mt-1">Green points</div>
           </div>
 
-          <div className="md:col-span-2 rounded-3xl bg-secondary p-7 shadow-soft">
+          <div className="sm:col-span-2 md:col-span-2 rounded-3xl bg-secondary p-6 sm:p-7 shadow-soft">
             <TrendingUp className="h-7 w-7 text-secondary-foreground" />
-            <div className="mt-6 font-serif text-6xl text-secondary-foreground">{co2Offset}<span className="text-2xl"> kg</span></div>
-            <div className="text-sm uppercase tracking-wider text-secondary-foreground/70 mt-1">CO₂ offset / yr</div>
+            <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl text-secondary-foreground break-words">{co2Offset}<span className="text-xl sm:text-2xl"> kg</span></div>
+            <div className="text-xs sm:text-sm uppercase tracking-wider text-secondary-foreground/70 mt-1">CO₂ offset / yr</div>
           </div>
 
           {/* Next badge */}
-          <div className="md:col-span-3 rounded-3xl bg-card border border-border p-7 shadow-soft">
-            <div className="flex items-center gap-2 text-sm uppercase tracking-wider text-muted-foreground">
+          <div className="md:col-span-3 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft">
+            <div className="flex items-center gap-2 text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">
               <Award className="h-4 w-4" /> Next badge
             </div>
             {nextBadge ? (
               <>
                 <div className="mt-4 flex items-center gap-4">
-                  <div className="text-5xl">{nextBadge.icon}</div>
-                  <div>
-                    <div className="font-serif text-2xl">{nextBadge.name}</div>
+                  <div className="text-4xl sm:text-5xl">{nextBadge.icon}</div>
+                  <div className="min-w-0">
+                    <div className="font-serif text-xl sm:text-2xl truncate">{nextBadge.name}</div>
                     <div className="text-sm text-muted-foreground">{nextBadge.threshold - totalSaplings} more sapling{nextBadge.threshold - totalSaplings === 1 ? "" : "s"} to unlock</div>
                   </div>
                 </div>
@@ -115,19 +115,19 @@ const Dashboard = () => {
                 </div>
               </>
             ) : (
-              <div className="mt-4 font-serif text-2xl">All badges unlocked! 🌳</div>
+              <div className="mt-4 font-serif text-xl sm:text-2xl">All badges unlocked! 🌳</div>
             )}
           </div>
 
           {/* Earned badges */}
-          <div className="md:col-span-3 rounded-3xl bg-surface-cream/70 border border-border p-7">
-            <div className="text-sm uppercase tracking-wider text-muted-foreground">Earned badges</div>
+          <div className="md:col-span-3 rounded-3xl bg-surface-cream/70 border border-border p-6 sm:p-7">
+            <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">Earned badges</div>
             {earnedBadges.length > 0 ? (
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
                 {earnedBadges.map((b) => (
-                  <div key={b.name} className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 shadow-soft">
-                    <span className="text-xl">{b.icon}</span>
-                    <span className="font-medium text-sm">{b.name}</span>
+                  <div key={b.name} className="flex items-center gap-2 rounded-full bg-card border border-border px-3 sm:px-4 py-2 shadow-soft">
+                    <span className="text-lg sm:text-xl">{b.icon}</span>
+                    <span className="font-medium text-xs sm:text-sm">{b.name}</span>
                   </div>
                 ))}
               </div>
@@ -139,9 +139,9 @@ const Dashboard = () => {
 
         {/* Recent plantings */}
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-serif text-3xl">Recent plantings</h2>
-            <Button asChild variant="ghost" size="sm">
+          <div className="flex items-center justify-between gap-3 mb-6">
+            <h2 className="font-serif text-2xl sm:text-3xl">Recent plantings</h2>
+            <Button asChild variant="ghost" size="sm" className="shrink-0">
               <Link to="/app/community">View community →</Link>
             </Button>
           </div>

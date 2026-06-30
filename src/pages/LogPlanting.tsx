@@ -55,19 +55,19 @@ const LogPlanting = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <SiteHeader />
 
-      <main className="flex-1 container py-10 md:py-16">
+      <main className="flex-1 container py-8 sm:py-10 md:py-16">
         <div className="max-w-2xl mx-auto animate-fade-up">
           <Button variant="ghost" size="sm" onClick={() => navigate("/app")} className="mb-6 -ml-3">
             <ArrowLeft className="h-4 w-4" /> Back to dashboard
           </Button>
 
-          <div className="mb-10">
+          <div className="mb-8 sm:mb-10">
             <Sprout className="h-10 w-10 text-primary-glow animate-leaf-sway" />
-            <h1 className="mt-4 font-serif text-4xl md:text-5xl">Log a new sapling</h1>
+            <h1 className="mt-4 font-serif text-3xl sm:text-4xl md:text-5xl">Log a new sapling</h1>
             <p className="mt-3 text-muted-foreground">A few details — and 10 green points are yours.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl bg-card border border-border p-8 shadow-soft">
+          <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl bg-card border border-border p-5 sm:p-8 shadow-soft">
             <div>
               <Label htmlFor="species">Species *</Label>
               <Input

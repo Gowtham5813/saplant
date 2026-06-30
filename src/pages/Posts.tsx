@@ -242,15 +242,15 @@ const Posts = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <SiteHeader />
 
-      <main className="flex-1 container py-10 md:py-14 max-w-2xl">
-        <div className="mb-8 flex items-end justify-between gap-4 animate-fade-up">
+      <main className="flex-1 container py-8 sm:py-10 md:py-14 max-w-2xl">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 animate-fade-up">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Stories from the soil</p>
-            <h1 className="mt-2 font-serif text-4xl md:text-5xl">Posts</h1>
-            <p className="mt-3 text-muted-foreground">Share photos of your plantings.</p>
+            <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Stories from the soil</p>
+            <h1 className="mt-2 font-serif text-3xl sm:text-4xl md:text-5xl">Posts</h1>
+            <p className="mt-2 sm:mt-3 text-muted-foreground">Share photos of your plantings.</p>
           </div>
           {user && (
-            <Button variant="forest" size="lg" onClick={() => setCreateOpen(true)} className="shrink-0">
+            <Button variant="forest" size="lg" onClick={() => setCreateOpen(true)} className="shrink-0 w-full sm:w-auto">
               <Plus /> Create post
             </Button>
           )}
