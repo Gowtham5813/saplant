@@ -4,6 +4,7 @@ import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, Message
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { WeeklyChallenge } from "@/components/WeeklyChallenge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
@@ -167,22 +168,25 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Community engagement stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
-          <Link to="/app/posts" className="rounded-3xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5">
-            <Camera className="h-6 w-6 text-primary-glow" />
-            <div className="mt-4 font-serif text-4xl">{postsCount}</div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Posts shared</div>
-          </Link>
-          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
-            <Heart className="h-6 w-6 text-primary-glow" />
-            <div className="mt-4 font-serif text-4xl">{likesReceived}</div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Likes received</div>
-          </div>
-          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
-            <MessageCircle className="h-6 w-6 text-primary-glow" />
-            <div className="mt-4 font-serif text-4xl">{commentsReceived}</div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Comments received</div>
+        {/* Weekly challenge + engagement */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-10">
+          <WeeklyChallenge />
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <Link to="/app/posts" className="rounded-3xl bg-card border border-border p-4 sm:p-5 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5">
+              <Camera className="h-5 w-5 text-primary-glow" />
+              <div className="mt-3 font-serif text-2xl sm:text-3xl">{postsCount}</div>
+              <div className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">Posts</div>
+            </Link>
+            <div className="rounded-3xl bg-card border border-border p-4 sm:p-5 shadow-soft">
+              <Heart className="h-5 w-5 text-primary-glow" />
+              <div className="mt-3 font-serif text-2xl sm:text-3xl">{likesReceived}</div>
+              <div className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">Likes</div>
+            </div>
+            <div className="rounded-3xl bg-card border border-border p-4 sm:p-5 shadow-soft">
+              <MessageCircle className="h-5 w-5 text-primary-glow" />
+              <div className="mt-3 font-serif text-2xl sm:text-3xl">{commentsReceived}</div>
+              <div className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">Comments</div>
+            </div>
           </div>
         </div>
 
