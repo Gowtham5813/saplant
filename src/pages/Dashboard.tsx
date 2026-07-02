@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award } from "lucide-react";
+import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -34,21 +34,51 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [plantings, setPlantings] = useState<Planting[]>([]);
+  const [postsCount, setPostsCount] = useState(0);
+  const [likesReceived, setLikesReceived] = useState(0);
+  const [commentsReceived, setCommentsReceived] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!user) return;
-    const load = async () => {
-      const [{ data: p }, { data: pl }] = await Promise.all([
-        supabase.from("profiles").select("display_name, total_points, total_saplings").eq("id", user.id).maybeSingle(),
-        supabase.from("plantings").select("id, species, location, planted_at, points_earned").eq("user_id", user.id).order("planted_at", { ascending: false }).limit(8),
+    const [{ data: p }, { data: pl }, { data: myPosts }] = await Promise.all([
+      supabase.from("profiles").select("display_name, total_points, total_saplings").eq("id", user.id).maybeSingle(),
+      supabase.from("plantings").select("id, species, location, planted_at, points_earned").eq("user_id", user.id).order("planted_at", { ascending: false }).limit(8),
+      supabase.from("posts").select("id").eq("user_id", user.id),
+    ]);
+    setProfile(p);
+    setPlantings(pl ?? []);
+    const ids = (myPosts ?? []).map((x) => x.id);
+    setPostsCount(ids.length);
+    if (ids.length) {
+      const [{ count: lc }, { count: cc }] = await Promise.all([
+        supabase.from("post_likes").select("id", { count: "exact", head: true }).in("post_id", ids),
+        supabase.from("post_comments").select("id", { count: "exact", head: true }).in("post_id", ids),
       ]);
-      setProfile(p);
-      setPlantings(pl ?? []);
-      setLoading(false);
-    };
-    load();
+      setLikesReceived(lc ?? 0);
+      setCommentsReceived(cc ?? 0);
+    } else {
+      setLikesReceived(0);
+      setCommentsReceived(0);
+    }
+    setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    load();
+    if (!user) return;
+    const channel = supabase
+      .channel("dashboard-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "plantings", filter: `user_id=eq.${user.id}` }, load)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${user.id}` }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "posts", filter: `user_id=eq.${user.id}` }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_likes" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_comments" }, load)
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, load]);
 
   const totalSaplings = profile?.total_saplings ?? 0;
   const nextBadge = BADGES.find((b) => b.threshold > totalSaplings);
@@ -134,6 +164,25 @@ const Dashboard = () => {
             ) : (
               <p className="mt-4 text-muted-foreground italic">Plant your first sapling to earn the Seedling badge.</p>
             )}
+          </div>
+        </div>
+
+        {/* Community engagement stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
+          <Link to="/app/posts" className="rounded-3xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5">
+            <Camera className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{postsCount}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Posts shared</div>
+          </Link>
+          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
+            <Heart className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{likesReceived}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Likes received</div>
+          </div>
+          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
+            <MessageCircle className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{commentsReceived}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Comments received</div>
           </div>
         </div>
 
