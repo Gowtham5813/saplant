@@ -167,6 +167,25 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Community engagement stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
+          <Link to="/app/posts" className="rounded-3xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5">
+            <Camera className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{postsCount}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Posts shared</div>
+          </Link>
+          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
+            <Heart className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{likesReceived}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Likes received</div>
+          </div>
+          <div className="rounded-3xl bg-card border border-border p-6 shadow-soft">
+            <MessageCircle className="h-6 w-6 text-primary-glow" />
+            <div className="mt-4 font-serif text-4xl">{commentsReceived}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Comments received</div>
+          </div>
+        </div>
+
         {/* Recent plantings */}
         <section>
           <div className="flex items-center justify-between gap-3 mb-6">
