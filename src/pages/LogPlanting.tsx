@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sprout } from "lucide-react";
+import { ArrowLeft, Sprout, Loader2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +29,28 @@ const LogPlanting = () => {
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
   const [shared, setShared] = useState(true);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+
+  const grabLocation = () => {
+    if (!("geolocation" in navigator)) {
+      toast.error("Geolocation not supported on this device");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocating(false);
+        toast.success("Location captured — will appear on the map 🌍");
+      },
+      (err) => {
+        setLocating(false);
+        toast.error(err.message || "Could not get location");
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +66,8 @@ const LogPlanting = () => {
       location: parsed.data.location,
       notes: parsed.data.notes || null,
       shared,
+      latitude: coords?.lat ?? null,
+      longitude: coords?.lng ?? null,
     });
     setLoading(false);
     if (error) return toast.error(error.message);
@@ -105,12 +129,26 @@ const LogPlanting = () => {
               />
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl bg-muted/50 p-4">
-              <div>
-                <Label htmlFor="shared" className="cursor-pointer">Share with community</Label>
-                <p className="text-xs text-muted-foreground mt-0.5">Inspire other planters in the feed.</p>
+            <div className="rounded-2xl bg-muted/50 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <Label className="cursor-pointer">Pin on map</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {coords ? `Captured (${coords.lat.toFixed(3)}, ${coords.lng.toFixed(3)})` : "Add coordinates so this sapling appears on the world map."}
+                  </p>
+                </div>
+                <Button type="button" variant="outline" size="sm" onClick={grabLocation} disabled={locating} className="shrink-0">
+                  {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+                  {coords ? "Retry" : "Use my location"}
+                </Button>
               </div>
-              <Switch id="shared" checked={shared} onCheckedChange={setShared} />
+              <div className="flex items-center justify-between border-t border-border pt-3">
+                <div>
+                  <Label htmlFor="shared" className="cursor-pointer">Share with community</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">Inspire other planters in the feed.</p>
+                </div>
+                <Switch id="shared" checked={shared} onCheckedChange={setShared} />
+              </div>
             </div>
 
             <Button type="submit" variant="forest" size="lg" className="w-full" disabled={loading}>

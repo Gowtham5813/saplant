@@ -27,6 +27,7 @@ export const SiteHeader = () => {
   const appLinks = [
     { to: "/app", label: "Dashboard" },
     { to: "/app/log", label: "Log a planting" },
+    { to: "/app/map", label: "Map" },
     { to: "/app/posts", label: "Posts" },
     { to: "/app/community", label: "Community" },
   ];
