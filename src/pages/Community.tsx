@@ -101,23 +101,28 @@ const Community = () => {
           {/* Leaderboard */}
           <aside>
             <h2 className="font-serif text-2xl mb-5">Top planters</h2>
-            <div className="rounded-3xl bg-gradient-forest text-primary-foreground p-6 shadow-elevated grain relative">
+            <div className="rounded-3xl bg-animated-forest text-primary-foreground p-6 shadow-elevated grain relative overflow-hidden">
               <div className="relative space-y-3">
                 {leaders.length === 0 ? (
                   <p className="text-primary-foreground/70">No planters yet.</p>
                 ) : (
-                  leaders.map((l, i) => (
-                    <div key={l.id} className="flex items-center gap-3 rounded-xl bg-primary-foreground/5 p-3 border border-primary-foreground/10">
-                      <div className="font-serif text-2xl text-secondary w-7">{i + 1}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{l.display_name}</div>
-                        <div className="text-xs text-primary-foreground/60">{l.total_saplings} sapling{l.total_saplings === 1 ? "" : "s"}</div>
+                  leaders.map((l, i) => {
+                    const medal = ["🥇", "🥈", "🥉"][i];
+                    return (
+                      <div key={l.id} className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 p-3 border border-primary-foreground/10 transition-organic hover:bg-primary-foreground/15 hover:translate-x-1">
+                        <div className="font-serif text-2xl w-8 text-center">
+                          {medal ?? <span className="text-secondary">{i + 1}</span>}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{l.display_name}</div>
+                          <div className="text-xs text-primary-foreground/60">{l.total_saplings} sapling{l.total_saplings === 1 ? "" : "s"}</div>
+                        </div>
+                        <div className="flex items-center gap-1 text-secondary text-sm font-semibold">
+                          <Trophy className="h-3.5 w-3.5" /> {l.total_points}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 text-secondary text-sm font-semibold">
-                        <Trophy className="h-3.5 w-3.5" /> {l.total_points}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
