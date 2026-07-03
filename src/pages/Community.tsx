@@ -73,23 +73,24 @@ const Community = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {feed.map((p) => (
-                  <article key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated">
+                {feed.map((p, i) => (
+                  <article key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 50}ms` }}>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-moss text-primary-foreground font-serif text-lg">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-moss text-primary-foreground font-serif text-lg shadow-soft">
                         {p.display_name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="font-medium">{p.display_name}</div>
                         <div className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(p.planted_at), { addSuffix: true })}</div>
                       </div>
+                      <div className="ml-auto text-lg animate-leaf-sway">🌱</div>
                     </div>
                     <div className="mt-4">
-                      <div className="font-serif text-2xl">Planted a {p.species}</div>
+                      <div className="font-serif text-2xl">Planted a <span className="text-primary-glow">{p.species}</span></div>
                       <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" /> {p.location}
                       </div>
-                      {p.notes && <p className="mt-3 text-sm text-foreground/80 leading-relaxed italic">"{p.notes}"</p>}
+                      {p.notes && <p className="mt-3 text-sm text-foreground/80 leading-relaxed italic border-l-2 border-secondary pl-3">"{p.notes}"</p>}
                     </div>
                   </article>
                 ))}
@@ -100,23 +101,28 @@ const Community = () => {
           {/* Leaderboard */}
           <aside>
             <h2 className="font-serif text-2xl mb-5">Top planters</h2>
-            <div className="rounded-3xl bg-gradient-forest text-primary-foreground p-6 shadow-elevated grain relative">
+            <div className="rounded-3xl bg-animated-forest text-primary-foreground p-6 shadow-elevated grain relative overflow-hidden">
               <div className="relative space-y-3">
                 {leaders.length === 0 ? (
                   <p className="text-primary-foreground/70">No planters yet.</p>
                 ) : (
-                  leaders.map((l, i) => (
-                    <div key={l.id} className="flex items-center gap-3 rounded-xl bg-primary-foreground/5 p-3 border border-primary-foreground/10">
-                      <div className="font-serif text-2xl text-secondary w-7">{i + 1}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{l.display_name}</div>
-                        <div className="text-xs text-primary-foreground/60">{l.total_saplings} sapling{l.total_saplings === 1 ? "" : "s"}</div>
+                  leaders.map((l, i) => {
+                    const medal = ["🥇", "🥈", "🥉"][i];
+                    return (
+                      <div key={l.id} className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 p-3 border border-primary-foreground/10 transition-organic hover:bg-primary-foreground/15 hover:translate-x-1">
+                        <div className="font-serif text-2xl w-8 text-center">
+                          {medal ?? <span className="text-secondary">{i + 1}</span>}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{l.display_name}</div>
+                          <div className="text-xs text-primary-foreground/60">{l.total_saplings} sapling{l.total_saplings === 1 ? "" : "s"}</div>
+                        </div>
+                        <div className="flex items-center gap-1 text-secondary text-sm font-semibold">
+                          <Trophy className="h-3.5 w-3.5" /> {l.total_points}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 text-secondary text-sm font-semibold">
-                        <Trophy className="h-3.5 w-3.5" /> {l.total_points}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

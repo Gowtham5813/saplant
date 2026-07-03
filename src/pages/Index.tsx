@@ -3,6 +3,7 @@ import { ArrowRight, Sprout, Trophy, Users, BookOpen, MapPin, Bell, Leaf } from 
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FloatingLeaves } from "@/components/FloatingLeaves";
 import heroImage from "@/assets/hero-forest.jpg";
 import saplingImage from "@/assets/sapling-closeup.jpg";
 import aerialImage from "@/assets/forest-aerial.jpg";
@@ -23,17 +24,18 @@ const Index = () => {
               width={1920}
               height={1080}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-surface-forest/30 via-surface-forest/40 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-surface-forest/40 via-surface-forest/50 to-background" />
+            <FloatingLeaves count={16} />
           </div>
 
           <div className="container relative pt-16 pb-24 sm:pt-24 sm:pb-32 md:pt-36 md:pb-44">
             <div className="max-w-3xl animate-fade-up">
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
-                <Leaf className="h-3 w-3" /> Reforest. Reward. Repeat.
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground animate-pulse-ring">
+                <Leaf className="h-3 w-3 animate-leaf-sway" /> Reforest. Reward. Repeat.
               </span>
               <h1 className="mt-6 font-serif text-4xl sm:text-5xl md:text-7xl font-semibold leading-[1.05] text-primary-foreground text-balance">
                 Plant a sapling.<br />
-                <span className="italic text-secondary">Earn the planet's gratitude.</span>
+                <span className="italic text-shimmer">Earn the planet's gratitude.</span>
               </h1>
               <p className="mt-6 max-w-xl text-base sm:text-lg text-primary-foreground/90 leading-relaxed">
                 Log every tree you plant, watch your impact grow, and join a community of green guardians turning small acts into lasting forests.
@@ -79,8 +81,8 @@ const Index = () => {
               { n: "02", t: "Log it in seconds", d: "Snap the species, location, and date. We award you green points instantly." },
               { n: "03", t: "Climb the canopy", d: "Earn badges, unlock rewards, and inspire others in your community feed." },
             ].map((step, i) => (
-              <div key={step.n} className="animate-grow-in" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="font-serif text-5xl sm:text-6xl text-primary-glow/30">{step.n}</div>
+              <div key={step.n} className="group animate-grow-in rounded-3xl p-6 transition-organic hover:bg-card hover:shadow-soft" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="font-serif text-5xl sm:text-6xl text-primary-glow/30 transition-organic group-hover:text-primary-glow group-hover:-translate-y-1">{step.n}</div>
                 <h3 className="mt-4 font-serif text-2xl">{step.t}</h3>
                 <p className="mt-2 text-muted-foreground leading-relaxed">{step.d}</p>
               </div>
@@ -166,7 +168,8 @@ const Index = () => {
 
         {/* COMMUNITY CTA */}
         <section id="community" className="container py-16 sm:py-24 md:py-32">
-          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-forest p-8 sm:p-12 md:p-20 shadow-elevated grain">
+          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-animated-forest p-8 sm:p-12 md:p-20 shadow-elevated grain">
+            <FloatingLeaves count={10} />
             <div className="relative max-w-2xl">
               <Sprout className="h-10 w-10 text-secondary animate-leaf-sway" />
               <h2 className="mt-6 font-serif text-3xl sm:text-4xl md:text-6xl text-primary-foreground text-balance">
