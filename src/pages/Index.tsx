@@ -168,7 +168,8 @@ const Index = () => {
 
         {/* COMMUNITY CTA */}
         <section id="community" className="container py-16 sm:py-24 md:py-32">
-          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-forest p-8 sm:p-12 md:p-20 shadow-elevated grain">
+          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-animated-forest p-8 sm:p-12 md:p-20 shadow-elevated grain">
+            <FloatingLeaves count={10} />
             <div className="relative max-w-2xl">
               <Sprout className="h-10 w-10 text-secondary animate-leaf-sway" />
               <h2 className="mt-6 font-serif text-3xl sm:text-4xl md:text-6xl text-primary-foreground text-balance">
