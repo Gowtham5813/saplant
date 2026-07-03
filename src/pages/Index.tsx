@@ -3,6 +3,7 @@ import { ArrowRight, Sprout, Trophy, Users, BookOpen, MapPin, Bell, Leaf } from 
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FloatingLeaves } from "@/components/FloatingLeaves";
 import heroImage from "@/assets/hero-forest.jpg";
 import saplingImage from "@/assets/sapling-closeup.jpg";
 import aerialImage from "@/assets/forest-aerial.jpg";
