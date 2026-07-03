@@ -24,17 +24,18 @@ const Index = () => {
               width={1920}
               height={1080}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-surface-forest/30 via-surface-forest/40 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-surface-forest/40 via-surface-forest/50 to-background" />
+            <FloatingLeaves count={16} />
           </div>
 
           <div className="container relative pt-16 pb-24 sm:pt-24 sm:pb-32 md:pt-36 md:pb-44">
             <div className="max-w-3xl animate-fade-up">
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
-                <Leaf className="h-3 w-3" /> Reforest. Reward. Repeat.
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground animate-pulse-ring">
+                <Leaf className="h-3 w-3 animate-leaf-sway" /> Reforest. Reward. Repeat.
               </span>
               <h1 className="mt-6 font-serif text-4xl sm:text-5xl md:text-7xl font-semibold leading-[1.05] text-primary-foreground text-balance">
                 Plant a sapling.<br />
-                <span className="italic text-secondary">Earn the planet's gratitude.</span>
+                <span className="italic text-shimmer">Earn the planet's gratitude.</span>
               </h1>
               <p className="mt-6 max-w-xl text-base sm:text-lg text-primary-foreground/90 leading-relaxed">
                 Log every tree you plant, watch your impact grow, and join a community of green guardians turning small acts into lasting forests.
