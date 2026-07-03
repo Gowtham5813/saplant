@@ -96,7 +96,7 @@ const Dashboard = () => {
           <div>
             <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-primary-glow font-semibold">Your canopy</p>
             <h1 className="mt-2 font-serif text-3xl sm:text-4xl md:text-5xl break-words">
-              Hello, {profile?.display_name ?? "Planter"}.
+              Hello, <span className="text-shimmer">{profile?.display_name ?? "Planter"}</span>.
             </h1>
             <p className="mt-2 text-muted-foreground">Here's how your forest is growing.</p>
           </div>
