@@ -107,21 +107,21 @@ const Dashboard = () => {
 
         {/* Stat bento */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-5 auto-rows-[minmax(160px,auto)] mb-10">
-          <div className="md:col-span-2 rounded-3xl bg-gradient-forest p-6 sm:p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden">
+          <div className="md:col-span-2 rounded-3xl bg-animated-forest p-6 sm:p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden hover-lift">
             <div className="relative">
-              <Sprout className="h-7 w-7 text-secondary" />
+              <Sprout className="h-7 w-7 text-secondary animate-leaf-sway" />
               <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{totalSaplings}</div>
               <div className="text-xs sm:text-sm uppercase tracking-wider text-primary-foreground/70 mt-1">Saplings planted</div>
             </div>
           </div>
 
-          <div className="md:col-span-2 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft">
+          <div className="md:col-span-2 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft hover-lift">
             <Trophy className="h-7 w-7 text-primary-glow" />
             <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{profile?.total_points ?? 0}</div>
             <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground mt-1">Green points</div>
           </div>
 
-          <div className="sm:col-span-2 md:col-span-2 rounded-3xl bg-secondary p-6 sm:p-7 shadow-soft">
+          <div className="sm:col-span-2 md:col-span-2 rounded-3xl bg-secondary p-6 sm:p-7 shadow-soft hover-lift">
             <TrendingUp className="h-7 w-7 text-secondary-foreground" />
             <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl text-secondary-foreground break-words">{co2Offset}<span className="text-xl sm:text-2xl"> kg</span></div>
             <div className="text-xs sm:text-sm uppercase tracking-wider text-secondary-foreground/70 mt-1">CO₂ offset / yr</div>
