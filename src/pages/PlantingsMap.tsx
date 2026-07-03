@@ -1,28 +1,9 @@
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { Sprout, MapPin } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-
-// Inline SVG marker so we don't depend on Leaflet's default image assets.
-const leafIcon = L.divIcon({
-  className: "",
-  html: `<div style="
-    width:32px;height:32px;border-radius:50% 50% 50% 0;
-    background:hsl(var(--primary));transform:rotate(-45deg);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 4px 12px rgba(0,0,0,0.25);border:2px solid white;">
-    <span style="transform:rotate(45deg);color:white;font-size:16px;">🌱</span>
-  </div>`,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -30],
-});
 
 interface PlantingPoint {
   id: string;
@@ -34,9 +15,46 @@ interface PlantingPoint {
   planter: string;
 }
 
+declare global {
+  interface Window {
+    google: any;
+    __initSaplantMap?: () => void;
+  }
+}
+
+const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+const TRACKING_ID = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID as string | undefined;
+
+let mapsLoader: Promise<void> | null = null;
+const loadGoogleMaps = () => {
+  if (mapsLoader) return mapsLoader;
+  mapsLoader = new Promise<void>((resolve, reject) => {
+    if (window.google?.maps) return resolve();
+    if (!BROWSER_KEY) return reject(new Error("Missing Google Maps browser key"));
+    window.__initSaplantMap = () => resolve();
+    const s = document.createElement("script");
+    const params = new URLSearchParams({
+      key: BROWSER_KEY,
+      loading: "async",
+      callback: "__initSaplantMap",
+      libraries: "marker",
+    });
+    if (TRACKING_ID) params.set("channel", TRACKING_ID);
+    s.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+    s.async = true;
+    s.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(s);
+  });
+  return mapsLoader;
+};
+
 const PlantingsMap = () => {
   const [points, setPoints] = useState<PlantingPoint[]>([]);
   const [loading, setLoading] = useState(true);
+  const mapEl = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
+  const infoRef = useRef<any>(null);
 
   useEffect(() => {
     (async () => {
@@ -74,9 +92,70 @@ const PlantingsMap = () => {
     })();
   }, []);
 
-  const center: [number, number] = points.length
-    ? [points[0].latitude, points[0].longitude]
-    : [20, 0];
+  useEffect(() => {
+    if (loading || !mapEl.current) return;
+    let cancelled = false;
+
+    loadGoogleMaps()
+      .then(() => {
+        if (cancelled || !mapEl.current) return;
+        const google = window.google;
+        const center = points.length
+          ? { lat: points[0].latitude, lng: points[0].longitude }
+          : { lat: 20, lng: 0 };
+
+        if (!mapRef.current) {
+          mapRef.current = new google.maps.Map(mapEl.current, {
+            center,
+            zoom: points.length ? 3 : 2,
+            streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+          });
+          infoRef.current = new google.maps.InfoWindow();
+        }
+
+        markersRef.current.forEach((m) => m.setMap(null));
+        markersRef.current = [];
+
+        const bounds = new google.maps.LatLngBounds();
+        points.forEach((p) => {
+          const marker = new google.maps.Marker({
+            position: { lat: p.latitude, lng: p.longitude },
+            map: mapRef.current,
+            title: p.species,
+            label: { text: "🌱", fontSize: "18px" },
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 16,
+              fillColor: "#16a34a",
+              fillOpacity: 1,
+              strokeColor: "#ffffff",
+              strokeWeight: 2,
+            },
+          });
+          marker.addListener("click", () => {
+            infoRef.current.setContent(`
+              <div style="font-family:sans-serif;min-width:180px">
+                <div style="font-weight:600">🌱 ${p.species}</div>
+                <div style="font-size:12px;color:#555;margin-top:2px">📍 ${p.location}</div>
+                <div style="font-size:12px;color:#666;margin-top:4px">by ${p.planter}</div>
+                <div style="font-size:12px;color:#888">${formatDistanceToNow(new Date(p.planted_at), { addSuffix: true })}</div>
+              </div>`);
+            infoRef.current.open({ anchor: marker, map: mapRef.current });
+          });
+          markersRef.current.push(marker);
+          bounds.extend({ lat: p.latitude, lng: p.longitude });
+        });
+
+        if (points.length > 1) mapRef.current.fitBounds(bounds, 60);
+      })
+      .catch((e) => toast.error(e.message || "Google Maps failed to load"));
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, points]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -90,40 +169,13 @@ const PlantingsMap = () => {
           </p>
         </div>
 
-        <div className="rounded-3xl overflow-hidden border border-border shadow-elevated h-[70vh] min-h-[420px]">
-          {loading ? (
-            <div className="h-full flex items-center justify-center text-muted-foreground">Loading map…</div>
-          ) : (
-            <MapContainer
-              center={center}
-              zoom={points.length ? 3 : 2}
-              scrollWheelZoom
-              style={{ height: "100%", width: "100%" }}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {points.map((p) => (
-                <Marker key={p.id} position={[p.latitude, p.longitude]} icon={leafIcon}>
-                  <Popup>
-                    <div className="font-sans">
-                      <div className="font-semibold flex items-center gap-1">
-                        <Sprout className="h-3.5 w-3.5" /> {p.species}
-                      </div>
-                      <div className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {p.location}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">by {p.planter}</div>
-                      <div className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(p.planted_at), { addSuffix: true })}
-                      </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
+        <div className="rounded-3xl overflow-hidden border border-border shadow-elevated h-[70vh] min-h-[420px] relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-background/50 z-10">
+              Loading map…
+            </div>
           )}
+          <div ref={mapEl} className="h-full w-full" />
         </div>
 
         {!loading && points.length === 0 && (
