@@ -212,8 +212,8 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
-              {plantings.map((p) => (
-                <div key={p.id} className="rounded-2xl bg-card border border-border p-5 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5">
+              {plantings.map((p, i) => (
+                <div key={p.id} className="rounded-2xl bg-card border border-border p-5 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 60}ms` }}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="font-serif text-xl">{p.species}</div>
