@@ -81,8 +81,8 @@ const Index = () => {
               { n: "02", t: "Log it in seconds", d: "Snap the species, location, and date. We award you green points instantly." },
               { n: "03", t: "Climb the canopy", d: "Earn badges, unlock rewards, and inspire others in your community feed." },
             ].map((step, i) => (
-              <div key={step.n} className="animate-grow-in" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="font-serif text-5xl sm:text-6xl text-primary-glow/30">{step.n}</div>
+              <div key={step.n} className="group animate-grow-in rounded-3xl p-6 transition-organic hover:bg-card hover:shadow-soft" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="font-serif text-5xl sm:text-6xl text-primary-glow/30 transition-organic group-hover:text-primary-glow group-hover:-translate-y-1">{step.n}</div>
                 <h3 className="mt-4 font-serif text-2xl">{step.t}</h3>
                 <p className="mt-2 text-muted-foreground leading-relaxed">{step.d}</p>
               </div>
