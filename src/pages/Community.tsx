@@ -73,23 +73,24 @@ const Community = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {feed.map((p) => (
-                  <article key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated">
+                {feed.map((p, i) => (
+                  <article key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 50}ms` }}>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-moss text-primary-foreground font-serif text-lg">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-moss text-primary-foreground font-serif text-lg shadow-soft">
                         {p.display_name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="font-medium">{p.display_name}</div>
                         <div className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(p.planted_at), { addSuffix: true })}</div>
                       </div>
+                      <div className="ml-auto text-lg animate-leaf-sway">🌱</div>
                     </div>
                     <div className="mt-4">
-                      <div className="font-serif text-2xl">Planted a {p.species}</div>
+                      <div className="font-serif text-2xl">Planted a <span className="text-primary-glow">{p.species}</span></div>
                       <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" /> {p.location}
                       </div>
-                      {p.notes && <p className="mt-3 text-sm text-foreground/80 leading-relaxed italic">"{p.notes}"</p>}
+                      {p.notes && <p className="mt-3 text-sm text-foreground/80 leading-relaxed italic border-l-2 border-secondary pl-3">"{p.notes}"</p>}
                     </div>
                   </article>
                 ))}
