@@ -74,14 +74,15 @@ const Auth = () => {
   const handleGoogle = async () => {
     setLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/app",
+      redirect_uri: window.location.origin,
     });
     if (result.error) {
       setLoading(false);
       return toast.error("Google sign-in failed");
     }
     if (result.redirected) return;
-    navigate("/app");
+    // Session set by helper; navigate to app (AuthContext will also redirect)
+    navigate("/app", { replace: true });
   };
 
   return (
