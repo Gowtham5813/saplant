@@ -15,6 +15,24 @@ const emailSchema = z.string().trim().email("Enter a valid email").max(255);
 const passwordSchema = z.string().min(8, "Password must be at least 8 characters").max(72);
 const nameSchema = z.string().trim().min(1, "Name required").max(60);
 
+// In the Capacitor native app, window.location.origin is capacitor://localhost
+// (iOS) or http://localhost (Android) — neither is a valid OAuth callback.
+// Always send OAuth back to the published web origin, which IS registered.
+const PUBLISHED_ORIGIN = "https://saplant.lovable.app";
+const isNativeApp = () => {
+  if (typeof window === "undefined") return false;
+  const proto = window.location.protocol;
+  const host = window.location.hostname;
+  return (
+    proto === "capacitor:" ||
+    proto === "file:" ||
+    (proto === "http:" && (host === "localhost" || host === "10.0.2.2"))
+  );
+};
+const getAuthRedirectOrigin = () =>
+  isNativeApp() ? PUBLISHED_ORIGIN : window.location.origin;
+
+
 const Auth = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
