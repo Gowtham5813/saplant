@@ -13,11 +13,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { getMonthlyPlantingCounts, getPlantingStreak } from "@/lib/planting-growth";
 import { getBadgeProgress } from "@/lib/badges";
+import { getCalendarYearRange } from "@/lib/yearly-goal";
+import { YearlyGoalCard } from "@/components/YearlyGoalCard";
 
 interface Profile {
   display_name: string;
   total_points: number;
   total_saplings: number;
+  yearly_sapling_goal: number | null;
 }
 interface Planting {
   id: string;
@@ -40,6 +43,7 @@ const Dashboard = () => {
   const [plantings, setPlantings] = useState<Planting[]>([]);
   const [growthPlantings, setGrowthPlantings] = useState<GrowthPlanting[]>([]);
   const [allPlantings, setAllPlantings] = useState<GrowthPlanting[]>([]);
+  const [yearlyPlantingCount, setYearlyPlantingCount] = useState(0);
   const [postsCount, setPostsCount] = useState(0);
   const [likesReceived, setLikesReceived] = useState(0);
   const [commentsReceived, setCommentsReceived] = useState(0);
@@ -50,17 +54,20 @@ const Dashboard = () => {
     const now = new Date();
     const growthStart = startOfMonth(subMonths(now, 5)).toISOString();
     const growthEnd = startOfMonth(addMonths(now, 1)).toISOString();
-    const [{ data: p }, { data: pl }, { data: myPosts }, { data: monthlyPlantings }, { data: allPlantings }] = await Promise.all([
-      supabase.from("profiles").select("display_name, total_points, total_saplings").eq("id", user.id).maybeSingle(),
+    const yearlyRange = getCalendarYearRange(now);
+    const [{ data: p }, { data: pl }, { data: myPosts }, { data: monthlyPlantings }, { data: allPlantings }, { count: yearCount }] = await Promise.all([
+      supabase.from("profiles").select("display_name, total_points, total_saplings, yearly_sapling_goal").eq("id", user.id).maybeSingle(),
       supabase.from("plantings").select("id, species, location, planted_at, points_earned").eq("user_id", user.id).order("planted_at", { ascending: false }).limit(8),
       supabase.from("posts").select("id").eq("user_id", user.id),
       supabase.from("plantings").select("planted_at").eq("user_id", user.id).gte("planted_at", growthStart).lt("planted_at", growthEnd),
       supabase.from("plantings").select("planted_at").eq("user_id", user.id),
+      supabase.from("plantings").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("planted_at", yearlyRange.start).lt("planted_at", yearlyRange.end),
     ]);
     setProfile(p);
     setPlantings(pl ?? []);
     setGrowthPlantings(monthlyPlantings ?? []);
     setAllPlantings(allPlantings ?? []);
+    setYearlyPlantingCount(yearCount ?? 0);
     const ids = (myPosts ?? []).map((x) => x.id);
     setPostsCount(ids.length);
     if (ids.length) {
@@ -119,6 +126,15 @@ const Dashboard = () => {
             <Link to="/app/log"><Plus className="h-4 w-4" /> Log a planting</Link>
           </Button>
         </div>
+
+        <YearlyGoalCard
+          userId={user?.id ?? ""}
+          year={new Date().getFullYear()}
+          plantingCount={yearlyPlantingCount}
+          goal={profile?.yearly_sapling_goal ?? null}
+          loading={loading}
+          onGoalUpdated={(yearly_sapling_goal) => setProfile((current) => current ? { ...current, yearly_sapling_goal } : current)}
+        />
 
         {/* Stat bento */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 sm:gap-5 auto-rows-[minmax(160px,auto)] mb-10">

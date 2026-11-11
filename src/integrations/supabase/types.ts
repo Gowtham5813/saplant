@@ -159,6 +159,7 @@ export type Database = {
           total_points: number
           total_saplings: number
           updated_at: string
+          yearly_sapling_goal: number | null
         }
         Insert: {
           avatar_url?: string | null
@@ -168,6 +169,7 @@ export type Database = {
           total_points?: number
           total_saplings?: number
           updated_at?: string
+          yearly_sapling_goal?: number | null
         }
         Update: {
           avatar_url?: string | null
@@ -177,6 +179,7 @@ export type Database = {
           total_points?: number
           total_saplings?: number
           updated_at?: string
+          yearly_sapling_goal?: number | null
         }
         Relationships: []
       }
