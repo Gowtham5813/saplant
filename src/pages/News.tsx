@@ -25,9 +25,9 @@ const categories: Category[] = ["All stories", "Forests", "Wildlife", "Climate",
 
 const categoryFor = (article: NewsArticle): Exclude<Category, "All stories"> => {
   const text = `${article.title} ${article.summary} ${article.topics.join(" ")}`.toLowerCase();
-  if (/wildlife|biodiversity|species|habitat|animal/.test(text)) return "Wildlife";
-  if (/climate|warming|carbon|emission|drought|flood/.test(text)) return "Climate";
   if (/restor|community|indigenous|people|reforest|landscape/.test(text)) return "Restoration";
+  if (/wildlife|species|habitat|animal|biodiversity loss/.test(text)) return "Wildlife";
+  if (/climate|warming|carbon|emission|drought|flood/.test(text)) return "Climate";
   return "Forests";
 };
 
