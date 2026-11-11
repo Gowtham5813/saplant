@@ -140,7 +140,7 @@ export const YearlyGoalCard = ({ userId, year, plantingCount, goal, loading = fa
               <Input
                 autoFocus
                 id="yearly-sapling-goal"
-                type="number"
+                type="text"
                 inputMode="numeric"
                 min={1}
                 max={2_147_483_647}

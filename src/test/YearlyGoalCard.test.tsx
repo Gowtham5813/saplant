@@ -5,14 +5,17 @@ import { YearlyGoalCard } from "@/components/YearlyGoalCard";
 const update = vi.fn();
 const eq = vi.fn(() => Promise.resolve({ error: null }));
 const from = vi.fn((_table: string) => ({ update, eq }));
+const toastError = vi.fn();
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { from: (table: string) => from(table) },
 }));
+vi.mock("sonner", () => ({ toast: { error: (...args: unknown[]) => toastError(...args), success: vi.fn() } }));
 
 describe("YearlyGoalCard", () => {
   beforeEach(() => {
     update.mockReset();
+    toastError.mockReset();
     update.mockReturnValue({ eq });
     eq.mockReset();
     eq.mockResolvedValue({ error: null });
@@ -67,7 +70,7 @@ describe("YearlyGoalCard", () => {
     fireEvent.change(screen.getByLabelText("Sapling target"), { target: { value: "2.5" } });
     fireEvent.click(screen.getByRole("button", { name: "Save goal" }));
 
-    expect(await screen.findByText("Enter a whole number greater than zero.")).toBeInTheDocument();
+    expect(toastError).toHaveBeenCalledWith("Enter a whole number greater than zero.");
     expect(update).not.toHaveBeenCalled();
   });
 });
