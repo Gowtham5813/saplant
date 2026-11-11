@@ -26,6 +26,12 @@ const cleanText = (value: unknown): string =>
   asText(value)
     .replace(/<[^>]*>/g, " ")
     .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&#(x[\da-f]+|\d+);/gi, (_entity, code: string) => {
+      const point = code.toLowerCase().startsWith("x")
+        ? Number.parseInt(code.slice(1), 16)
+        : Number.parseInt(code, 10);
+      return point > 0 && point <= 0x10ffff ? String.fromCodePoint(point) : "";
+    })
     .replace(/&amp;/gi, "&")
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
