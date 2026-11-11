@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import LogPlanting from "./pages/LogPlanting.tsx";
+import PlantingDetail from "./pages/PlantingDetail.tsx";
 import Community from "./pages/Community.tsx";
 import Posts from "./pages/Posts.tsx";
 import PlantingsMap from "./pages/PlantingsMap.tsx";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/app" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/app/log" element={<ProtectedRoute><LogPlanting /></ProtectedRoute>} />
+            <Route path="/app/planting/:id" element={<ProtectedRoute><PlantingDetail /></ProtectedRoute>} />
             <Route path="/app/posts" element={<ProtectedRoute><Posts /></ProtectedRoute>} />
             <Route path="/app/map" element={<ProtectedRoute><PlantingsMap /></ProtectedRoute>} />
             <Route path="/app/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { MapPin, Sprout, Trophy } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -74,7 +75,8 @@ const Community = () => {
             ) : (
               <div className="space-y-4">
                 {feed.map((p, i) => (
-                  <article key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 50}ms` }}>
+                  <Link key={p.id} to={`/app/planting/${p.id}`} className="block rounded-2xl text-inherit no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  <article className="rounded-2xl bg-card border border-border p-6 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 50}ms` }}>
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-moss text-primary-foreground font-serif text-lg shadow-soft">
                         {p.display_name?.charAt(0).toUpperCase()}
@@ -93,6 +95,7 @@ const Community = () => {
                       {p.notes && <p className="mt-3 text-sm text-foreground/80 leading-relaxed italic border-l-2 border-secondary pl-3">"{p.notes}"</p>}
                     </div>
                   </article>
+                  </Link>
                 ))}
               </div>
             )}

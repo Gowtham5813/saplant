@@ -328,7 +328,8 @@ const Dashboard = () => {
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {plantings.map((p, i) => (
-                <div key={p.id} className="rounded-2xl bg-card border border-border p-5 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 60}ms` }}>
+                <Link key={p.id} to={`/app/planting/${p.id}`} className="block text-inherit no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl">
+                <article className="rounded-2xl bg-card border border-border p-5 shadow-soft transition-organic hover:shadow-elevated hover:-translate-y-0.5 animate-grow-in" style={{ animationDelay: `${i * 60}ms` }}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="font-serif text-xl">{p.species}</div>
@@ -343,7 +344,8 @@ const Dashboard = () => {
                       +{p.points_earned}
                     </div>
                   </div>
-                </div>
+                </article>
+                </Link>
               ))}
             </div>
           )}
