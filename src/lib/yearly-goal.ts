@@ -1,7 +1,17 @@
+import { addYears, startOfYear } from "date-fns";
+
 export interface YearlyGoalProgress {
   progressPercent: number;
   remaining: number;
   completed: boolean;
+}
+
+export function getCalendarYearRange(now = new Date()): { start: string; end: string } {
+  const start = startOfYear(now);
+  return {
+    start: start.toISOString(),
+    end: addYears(start, 1).toISOString(),
+  };
 }
 
 export function getYearlyGoalProgress(count: number, goal: number): YearlyGoalProgress {
