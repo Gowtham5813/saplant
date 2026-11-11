@@ -1,7 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { XMLParser } from "npm:fast-xml-parser@4.5.3";
-import { z } from "npm:zod@3.24.2";
 
 const feeds = [
   { name: "Mongabay", url: "https://news.mongabay.com/feed/" },
@@ -14,8 +13,6 @@ const parser = new XMLParser({
   textNodeName: "#text",
   processEntities: true,
 });
-
-const bodySchema = z.object({}).strict();
 
 const asText = (value: unknown): string => {
   if (typeof value === "string" || typeof value === "number") return String(value);
@@ -68,7 +65,9 @@ Deno.serve(async (req) => {
   } catch {
     return json({ error: "Invalid request body" }, 400);
   }
-  if (!bodySchema.safeParse(body).success) return json({ error: "Invalid request body" }, 400);
+  if (!body || typeof body !== "object" || Array.isArray(body) || Object.keys(body).length !== 0) {
+    return json({ error: "Invalid request body" }, 400);
+  }
 
   const results = await Promise.allSettled(
     feeds.map(async (feed) => {
