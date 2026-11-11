@@ -1,8 +1,51 @@
-import { format, startOfMonth, subMonths } from "date-fns";
+import { addWeeks, format, startOfMonth, startOfWeek, subMonths, subWeeks } from "date-fns";
 
 export interface MonthlyPlantingCount {
   month: string;
   count: number;
+}
+
+export interface PlantingStreak {
+  current: number;
+  longest: number;
+}
+
+export function getPlantingStreak(
+  plantings: readonly { planted_at: string }[],
+  now = new Date(),
+): PlantingStreak {
+  const activeWeeks = new Set<number>();
+
+  for (const planting of plantings) {
+    const date = new Date(planting.planted_at);
+    if (Number.isNaN(date.getTime())) continue;
+    activeWeeks.add(startOfWeek(date, { weekStartsOn: 1 }).getTime());
+  }
+
+  let current = 0;
+  let week = startOfWeek(now, { weekStartsOn: 1 });
+  while (activeWeeks.has(week.getTime())) {
+    current += 1;
+    week = subWeeks(week, 1);
+  }
+
+  const sortedWeeks = [...activeWeeks].sort((a, b) => a - b);
+  let longest = 0;
+  let run = 0;
+  let previous: number | null = null;
+
+  for (const timestamp of sortedWeeks) {
+    const previousDate = previous === null ? null : new Date(previous);
+    if (previousDate && addWeeks(previousDate, 1).getTime() === timestamp) {
+      run += 1;
+    } else {
+      run = 1;
+    }
+    longest = Math.max(longest, run);
+    previous = timestamp;
+  }
+
+  return { current, longest };
 }
 
 export function getMonthlyPlantingCounts(
