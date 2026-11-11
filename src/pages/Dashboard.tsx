@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle, Flame } from "lucide-react";
+import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle, Flame, Check, Lock } from "lucide-react";
 import { addMonths, startOfMonth, subMonths } from "date-fns";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { getMonthlyPlantingCounts, getPlantingStreak } from "@/lib/planting-growth";
+import { getBadgeProgress } from "@/lib/badges";
 
 interface Profile {
   display_name: string;
@@ -33,21 +34,12 @@ const growthChartConfig = {
   count: { label: "Saplings", color: "hsl(var(--primary-glow))" },
 } satisfies ChartConfig;
 
-const BADGES = [
-  { threshold: 1, name: "Seedling", icon: "🌱" },
-  { threshold: 5, name: "Sprout", icon: "🌿" },
-  { threshold: 10, name: "Sapling", icon: "🪴" },
-  { threshold: 25, name: "Grove Keeper", icon: "🌳" },
-  { threshold: 50, name: "Forest Guardian", icon: "🌲" },
-  { threshold: 100, name: "Canopy Champion", icon: "🏆" },
-];
-
 const Dashboard = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [plantings, setPlantings] = useState<Planting[]>([]);
   const [growthPlantings, setGrowthPlantings] = useState<GrowthPlanting[]>([]);
-  const [streakPlantings, setStreakPlantings] = useState<GrowthPlanting[]>([]);
+  const [allPlantings, setAllPlantings] = useState<GrowthPlanting[]>([]);
   const [postsCount, setPostsCount] = useState(0);
   const [likesReceived, setLikesReceived] = useState(0);
   const [commentsReceived, setCommentsReceived] = useState(0);
@@ -68,7 +60,7 @@ const Dashboard = () => {
     setProfile(p);
     setPlantings(pl ?? []);
     setGrowthPlantings(monthlyPlantings ?? []);
-    setStreakPlantings(allPlantings ?? []);
+    setAllPlantings(allPlantings ?? []);
     const ids = (myPosts ?? []).map((x) => x.id);
     setPostsCount(ids.length);
     if (ids.length) {
@@ -102,11 +94,12 @@ const Dashboard = () => {
   }, [user, load]);
 
   const totalSaplings = profile?.total_saplings ?? 0;
-  const nextBadge = BADGES.find((b) => b.threshold > totalSaplings);
-  const earnedBadges = BADGES.filter((b) => b.threshold <= totalSaplings);
+  const badges = getBadgeProgress(allPlantings.length);
+  const nextBadge = badges.find((badge) => badge.isNext);
+  const earnedBadges = badges.filter((badge) => badge.earned);
   const co2Offset = (totalSaplings * 21).toFixed(0); // ~21kg CO2/year per young tree
   const monthlyGrowth = getMonthlyPlantingCounts(growthPlantings);
-  const plantingStreak = getPlantingStreak(streakPlantings);
+  const plantingStreak = getPlantingStreak(allPlantings);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -205,6 +198,56 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* All badges */}
+        <section className="mb-10" aria-labelledby="all-badges-heading">
+          <div className="mb-5">
+            <h2 id="all-badges-heading" className="font-serif text-2xl sm:text-3xl">All badges</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Every milestone in your planting journey.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+            {badges.map((badge) => (
+              <article
+                key={badge.name}
+                className={`flex min-h-40 flex-col rounded-2xl border p-4 shadow-soft transition-organic ${
+                  badge.earned
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-muted/60 text-muted-foreground"
+                }`}
+                aria-label={`${badge.name}: ${badge.earned ? "earned" : `${badge.remaining} more saplings to unlock`}`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className={`text-3xl ${badge.earned ? "" : "grayscale opacity-60"}`} aria-hidden="true">{badge.icon}</span>
+                  {badge.earned ? (
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-foreground/15" aria-label="Earned">
+                      <Check className="h-4 w-4" />
+                    </span>
+                  ) : (
+                    <Lock className="h-4 w-4 shrink-0" aria-label="Locked" />
+                  )}
+                </div>
+                <h3 className="mt-3 font-serif text-base leading-tight">{badge.name}</h3>
+                <p className={`mt-1 text-xs ${badge.earned ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
+                  {badge.earned ? "Badge earned" : `${badge.remaining} more sapling${badge.remaining === 1 ? "" : "s"} to unlock`}
+                </p>
+                {badge.isNext && (
+                  <div className="mt-auto pt-3">
+                    <div
+                      className="h-1.5 overflow-hidden rounded-full bg-background/70"
+                      role="progressbar"
+                      aria-label={`Progress toward ${badge.name}`}
+                      aria-valuemin={0}
+                      aria-valuemax={badge.threshold}
+                      aria-valuenow={badge.threshold - badge.remaining}
+                    >
+                      <div className="h-full rounded-full bg-gradient-moss transition-organic" style={{ width: `${badge.progressPercent}%` }} />
+                    </div>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
 
         {/* Six-month planting history */}
         <section className="mb-10" aria-labelledby="growth-heading">
