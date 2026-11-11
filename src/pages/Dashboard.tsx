@@ -1,13 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle } from "lucide-react";
+import { addMonths, startOfMonth, subMonths } from "date-fns";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WeeklyChallenge } from "@/components/WeeklyChallenge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { getMonthlyPlantingCounts } from "@/lib/planting-growth";
 
 interface Profile {
   display_name: string;
@@ -21,6 +25,13 @@ interface Planting {
   planted_at: string;
   points_earned: number;
 }
+interface GrowthPlanting {
+  planted_at: string;
+}
+
+const growthChartConfig = {
+  count: { label: "Saplings", color: "hsl(var(--primary-glow))" },
+} satisfies ChartConfig;
 
 const BADGES = [
   { threshold: 1, name: "Seedling", icon: "🌱" },
@@ -35,6 +46,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [plantings, setPlantings] = useState<Planting[]>([]);
+  const [growthPlantings, setGrowthPlantings] = useState<GrowthPlanting[]>([]);
   const [postsCount, setPostsCount] = useState(0);
   const [likesReceived, setLikesReceived] = useState(0);
   const [commentsReceived, setCommentsReceived] = useState(0);
@@ -42,13 +54,18 @@ const Dashboard = () => {
 
   const load = useCallback(async () => {
     if (!user) return;
-    const [{ data: p }, { data: pl }, { data: myPosts }] = await Promise.all([
+    const now = new Date();
+    const growthStart = startOfMonth(subMonths(now, 5)).toISOString();
+    const growthEnd = startOfMonth(addMonths(now, 1)).toISOString();
+    const [{ data: p }, { data: pl }, { data: myPosts }, { data: monthlyPlantings }] = await Promise.all([
       supabase.from("profiles").select("display_name, total_points, total_saplings").eq("id", user.id).maybeSingle(),
       supabase.from("plantings").select("id, species, location, planted_at, points_earned").eq("user_id", user.id).order("planted_at", { ascending: false }).limit(8),
       supabase.from("posts").select("id").eq("user_id", user.id),
+      supabase.from("plantings").select("planted_at").eq("user_id", user.id).gte("planted_at", growthStart).lt("planted_at", growthEnd),
     ]);
     setProfile(p);
     setPlantings(pl ?? []);
+    setGrowthPlantings(monthlyPlantings ?? []);
     const ids = (myPosts ?? []).map((x) => x.id);
     setPostsCount(ids.length);
     if (ids.length) {
@@ -85,6 +102,7 @@ const Dashboard = () => {
   const nextBadge = BADGES.find((b) => b.threshold > totalSaplings);
   const earnedBadges = BADGES.filter((b) => b.threshold <= totalSaplings);
   const co2Offset = (totalSaplings * 21).toFixed(0); // ~21kg CO2/year per young tree
+  const monthlyGrowth = getMonthlyPlantingCounts(growthPlantings);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -167,6 +185,40 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Six-month planting history */}
+        <section className="mb-10" aria-labelledby="growth-heading">
+          <div className="mb-5">
+            <h2 id="growth-heading" className="font-serif text-2xl sm:text-3xl">Your growth</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Saplings you logged each month over the last six months.</p>
+          </div>
+          {loading ? (
+            <p className="text-muted-foreground">Loading your growth…</p>
+          ) : plantings.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-10 text-center">
+              <Sprout className="mx-auto h-10 w-10 text-primary-glow animate-leaf-sway" aria-hidden="true" />
+              <h3 className="mt-3 font-serif text-xl sm:text-2xl">Your growth begins with one small step.</h3>
+              <p className="mx-auto mt-2 max-w-md text-muted-foreground">Log your first sapling and your monthly progress will take shape here.</p>
+              <Button asChild variant="forest" className="mt-5">
+                <Link to="/app/log"><Plus className="h-4 w-4" /> Log a planting</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-soft sm:p-6">
+              <ChartContainer config={growthChartConfig} className="h-[250px] w-full aspect-auto sm:h-[280px]">
+                <BarChart data={monthlyGrowth} margin={{ top: 28, right: 12, left: 0, bottom: 4 }}>
+                  <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="3 3" />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={10} />
+                  <YAxis hide allowDecimals={false} domain={[0, (max: number) => Math.max(1, max + 1)]} />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                  <Bar dataKey="count" fill="var(--color-count)" radius={[5, 5, 0, 0]} maxBarSize={64}>
+                    <LabelList dataKey="count" position="top" className="fill-foreground" fontSize={12} />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </div>
+          )}
+        </section>
 
         {/* Weekly challenge + engagement */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-10">
