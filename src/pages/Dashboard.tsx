@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle } from "lucide-react";
+import { Sprout, Trophy, TrendingUp, MapPin, Plus, Award, Camera, Heart, MessageCircle, Flame } from "lucide-react";
 import { addMonths, startOfMonth, subMonths } from "date-fns";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { WeeklyChallenge } from "@/components/WeeklyChallenge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
-import { getMonthlyPlantingCounts } from "@/lib/planting-growth";
+import { getMonthlyPlantingCounts, getPlantingStreak } from "@/lib/planting-growth";
 
 interface Profile {
   display_name: string;
@@ -47,6 +47,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [plantings, setPlantings] = useState<Planting[]>([]);
   const [growthPlantings, setGrowthPlantings] = useState<GrowthPlanting[]>([]);
+  const [streakPlantings, setStreakPlantings] = useState<GrowthPlanting[]>([]);
   const [postsCount, setPostsCount] = useState(0);
   const [likesReceived, setLikesReceived] = useState(0);
   const [commentsReceived, setCommentsReceived] = useState(0);
@@ -57,15 +58,17 @@ const Dashboard = () => {
     const now = new Date();
     const growthStart = startOfMonth(subMonths(now, 5)).toISOString();
     const growthEnd = startOfMonth(addMonths(now, 1)).toISOString();
-    const [{ data: p }, { data: pl }, { data: myPosts }, { data: monthlyPlantings }] = await Promise.all([
+    const [{ data: p }, { data: pl }, { data: myPosts }, { data: monthlyPlantings }, { data: allPlantings }] = await Promise.all([
       supabase.from("profiles").select("display_name, total_points, total_saplings").eq("id", user.id).maybeSingle(),
       supabase.from("plantings").select("id, species, location, planted_at, points_earned").eq("user_id", user.id).order("planted_at", { ascending: false }).limit(8),
       supabase.from("posts").select("id").eq("user_id", user.id),
       supabase.from("plantings").select("planted_at").eq("user_id", user.id).gte("planted_at", growthStart).lt("planted_at", growthEnd),
+      supabase.from("plantings").select("planted_at").eq("user_id", user.id),
     ]);
     setProfile(p);
     setPlantings(pl ?? []);
     setGrowthPlantings(monthlyPlantings ?? []);
+    setStreakPlantings(allPlantings ?? []);
     const ids = (myPosts ?? []).map((x) => x.id);
     setPostsCount(ids.length);
     if (ids.length) {
@@ -103,6 +106,7 @@ const Dashboard = () => {
   const earnedBadges = BADGES.filter((b) => b.threshold <= totalSaplings);
   const co2Offset = (totalSaplings * 21).toFixed(0); // ~21kg CO2/year per young tree
   const monthlyGrowth = getMonthlyPlantingCounts(growthPlantings);
+  const plantingStreak = getPlantingStreak(streakPlantings);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -124,8 +128,8 @@ const Dashboard = () => {
         </div>
 
         {/* Stat bento */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-5 auto-rows-[minmax(160px,auto)] mb-10">
-          <div className="md:col-span-2 rounded-3xl bg-animated-forest p-6 sm:p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden hover-lift">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 sm:gap-5 auto-rows-[minmax(160px,auto)] mb-10">
+          <div className="md:col-span-3 rounded-3xl bg-animated-forest p-6 sm:p-7 text-primary-foreground shadow-elevated grain relative overflow-hidden hover-lift">
             <div className="relative">
               <Sprout className="h-7 w-7 text-secondary animate-leaf-sway" />
               <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{totalSaplings}</div>
@@ -133,20 +137,36 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="md:col-span-2 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft hover-lift">
+          <div className="md:col-span-3 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft hover-lift">
             <Trophy className="h-7 w-7 text-primary-glow" />
             <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{profile?.total_points ?? 0}</div>
             <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground mt-1">Green points</div>
           </div>
 
-          <div className="sm:col-span-2 md:col-span-2 rounded-3xl bg-secondary p-6 sm:p-7 shadow-soft hover-lift">
+          <div className="md:col-span-3 rounded-3xl bg-secondary/70 p-6 sm:p-7 shadow-soft hover-lift">
+            <Flame className="h-7 w-7 text-primary-glow" aria-hidden="true" />
+            <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl">{plantingStreak.current}</div>
+            <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground mt-1">{plantingStreak.current === 1 ? "Week streak" : "Weeks in a row"}</div>
+            {plantingStreak.current === 0 && (
+              <p className="mt-3 text-sm text-secondary-foreground">
+                {plantingStreak.longest === 0 ? (
+                  <>Ready to begin? <Link to="/app/log" className="font-semibold underline underline-offset-4">Log a planting</Link> this week.</>
+                ) : (
+                  <>Start a new streak this week: <Link to="/app/log" className="font-semibold underline underline-offset-4">log a planting</Link>.</>
+                )}
+              </p>
+            )}
+            <div className="mt-3 text-sm text-secondary-foreground/80">Longest streak: <span className="font-semibold">{plantingStreak.longest} {plantingStreak.longest === 1 ? "week" : "weeks"}</span></div>
+          </div>
+
+          <div className="md:col-span-3 rounded-3xl bg-secondary p-6 sm:p-7 shadow-soft hover-lift">
             <TrendingUp className="h-7 w-7 text-secondary-foreground" />
             <div className="mt-4 sm:mt-6 font-serif text-5xl sm:text-6xl text-secondary-foreground break-words">{co2Offset}<span className="text-xl sm:text-2xl"> kg</span></div>
             <div className="text-xs sm:text-sm uppercase tracking-wider text-secondary-foreground/70 mt-1">CO₂ offset / yr</div>
           </div>
 
           {/* Next badge */}
-          <div className="md:col-span-3 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft">
+          <div className="md:col-span-6 rounded-3xl bg-card border border-border p-6 sm:p-7 shadow-soft">
             <div className="flex items-center gap-2 text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">
               <Award className="h-4 w-4" /> Next badge
             </div>
@@ -169,7 +189,7 @@ const Dashboard = () => {
           </div>
 
           {/* Earned badges */}
-          <div className="md:col-span-3 rounded-3xl bg-surface-cream/70 border border-border p-6 sm:p-7">
+          <div className="md:col-span-6 rounded-3xl bg-surface-cream/70 border border-border p-6 sm:p-7">
             <div className="text-xs sm:text-sm uppercase tracking-wider text-muted-foreground">Earned badges</div>
             {earnedBadges.length > 0 ? (
               <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">

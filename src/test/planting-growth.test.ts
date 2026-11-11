@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getMonthlyPlantingCounts } from "@/lib/planting-growth";
+import { getMonthlyPlantingCounts, getPlantingStreak } from "@/lib/planting-growth";
 
 describe("getMonthlyPlantingCounts", () => {
   it("returns six calendar months with counts from planting timestamps", () => {
@@ -33,5 +33,39 @@ describe("getMonthlyPlantingCounts", () => {
       { month: "May", count: 0 },
       { month: "Jun", count: 0 },
     ]);
+  });
+});
+
+describe("getPlantingStreak", () => {
+  it("counts consecutive active weeks through the current week and the longest run", () => {
+    const result = getPlantingStreak(
+      [
+        { planted_at: "2026-01-05T12:00:00Z" },
+        { planted_at: "2026-01-12T12:00:00Z" },
+        { planted_at: "2026-02-02T12:00:00Z" },
+        { planted_at: "2026-06-01T12:00:00Z" },
+        { planted_at: "2026-06-14T12:00:00Z" },
+        { planted_at: "2026-06-15T12:00:00Z" },
+      ],
+      new Date("2026-06-17T12:00:00Z"),
+    );
+
+    expect(result).toEqual({ current: 3, longest: 3 });
+  });
+
+  it("returns zero current streak when this week has no planting, while keeping the personal best", () => {
+    const result = getPlantingStreak(
+      [
+        { planted_at: "2026-06-01T12:00:00Z" },
+        { planted_at: "2026-06-08T12:00:00Z" },
+      ],
+      new Date("2026-06-17T12:00:00Z"),
+    );
+
+    expect(result).toEqual({ current: 0, longest: 2 });
+  });
+
+  it("returns no streak for an empty planting history", () => {
+    expect(getPlantingStreak([], new Date("2026-06-17T12:00:00Z"))).toEqual({ current: 0, longest: 0 });
   });
 });
