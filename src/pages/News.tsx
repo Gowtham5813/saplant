@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import forestImage from "@/assets/forest-aerial.jpg";
 
 type NewsArticle = {
   title: string;
@@ -148,7 +149,7 @@ const News = () => {
               {featured && (
                 <article className="grid overflow-hidden border-b border-border py-8 sm:py-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] md:gap-10 md:py-12">
                   <div className="flex min-h-64 items-center justify-center overflow-hidden rounded-lg bg-surface-cream md:min-h-[340px]">
-                    <img src={requireForestImage} alt="A sunlit forest canopy" className="h-full w-full object-cover" />
+                    <img src={forestImage} alt="A sunlit forest canopy" className="h-full w-full object-cover" />
                   </div>
                   <div className="flex flex-col justify-center pt-6 md:py-4">
                     <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary-glow">
@@ -206,7 +207,5 @@ const News = () => {
     </div>
   );
 };
-
-import requireForestImage from "@/assets/forest-aerial.jpg";
 
 export default News;
