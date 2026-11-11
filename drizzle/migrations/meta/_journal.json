@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794400268607,
+      "tag": "0000_add_yearly_sapling_goal",
+      "breakpoints": true
+    }
+  ]
+}
