@@ -21,7 +21,7 @@ describe("YearlyGoalCard", () => {
 
   it("saves a positive integer goal to the user's profile and shows progress", async () => {
     const onGoalUpdated = vi.fn();
-    render(
+    const { rerender } = render(
       <YearlyGoalCard
         userId="user-123"
         year={2026}
@@ -39,6 +39,15 @@ describe("YearlyGoalCard", () => {
     expect(from).toHaveBeenCalledWith("profiles");
     expect(update).toHaveBeenCalledWith({ yearly_sapling_goal: 8 });
     expect(eq).toHaveBeenCalledWith("id", "user-123");
+    rerender(
+      <YearlyGoalCard
+        userId="user-123"
+        year={2026}
+        plantingCount={2}
+        goal={8}
+        onGoalUpdated={onGoalUpdated}
+      />,
+    );
     expect(screen.getByRole("progressbar", { name: "2026 planting goal progress" })).toHaveAttribute("aria-valuenow", "2");
     expect(screen.getByText("of 8")).toBeInTheDocument();
   });

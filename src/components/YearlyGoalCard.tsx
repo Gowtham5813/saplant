@@ -144,7 +144,7 @@ export const YearlyGoalCard = ({ userId, year, plantingCount, goal, loading = fa
                 inputMode="numeric"
                 min={1}
                 max={2_147_483_647}
-                step={1}
+                step="any"
                 placeholder="e.g. 12"
                 value={goalInput}
                 onChange={(event) => setGoalInput(event.target.value)}
