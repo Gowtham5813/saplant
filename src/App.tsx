@@ -12,6 +12,7 @@ import LogPlanting from "./pages/LogPlanting.tsx";
 import Community from "./pages/Community.tsx";
 import Posts from "./pages/Posts.tsx";
 import PlantingsMap from "./pages/PlantingsMap.tsx";
+import News from "./pages/News.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/app/posts" element={<ProtectedRoute><Posts /></ProtectedRoute>} />
             <Route path="/app/map" element={<ProtectedRoute><PlantingsMap /></ProtectedRoute>} />
             <Route path="/app/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+            <Route path="/app/news" element={<ProtectedRoute><News /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

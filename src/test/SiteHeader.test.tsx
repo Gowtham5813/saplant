@@ -32,6 +32,7 @@ describe("SiteHeader", () => {
     expect(screen.getByText("Log a planting")).toBeInTheDocument();
     expect(screen.getByText("Posts")).toBeInTheDocument();
     expect(screen.getByText("Community")).toBeInTheDocument();
+    expect(screen.getByText("Tree news")).toBeInTheDocument();
   });
 
   it("shows Saplant brand", () => {

@@ -30,6 +30,7 @@ export const SiteHeader = () => {
     { to: "/app/map", label: "Map" },
     { to: "/app/posts", label: "Posts" },
     { to: "/app/community", label: "Community" },
+    { to: "/app/news", label: "Tree news" },
   ];
 
   return (
