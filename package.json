@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "android:apk": "npm run build && npx cap sync android --config capacitor.config.release.ts && cd android && ./gradlew assembleDebug",
+    "android:apk": "npm run build && CAPACITOR_BUNDLE_ASSETS=1 npx cap sync android && cd android && ./gradlew assembleDebug",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
