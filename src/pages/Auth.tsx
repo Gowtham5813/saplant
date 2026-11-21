@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/contexts/AuthContext";
+import { getOAuthRedirectOrigin, NATIVE_OAUTH_BROKER_URL } from "@/lib/oauth-redirect";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -17,8 +19,8 @@ const nameSchema = z.string().trim().min(1, "Name required").max(60);
 
 // In the Capacitor native app, window.location.origin is capacitor://localhost
 // (iOS) or http://localhost (Android) — neither is a valid OAuth callback.
-// Always send OAuth back to the published web origin, which IS registered.
-const PUBLISHED_ORIGIN = "https://saplant.lovable.app";
+// The Android app's localhost origin cannot serve the hosted OAuth broker path.
+const nativeLovableAuth = createLovableAuth({ oauthBrokerUrl: NATIVE_OAUTH_BROKER_URL });
 const isNativeApp = () => {
   if (typeof window === "undefined") return false;
   const proto = window.location.protocol;
@@ -30,7 +32,7 @@ const isNativeApp = () => {
   );
 };
 const getAuthRedirectOrigin = () =>
-  isNativeApp() ? PUBLISHED_ORIGIN : window.location.origin;
+  getOAuthRedirectOrigin(isNativeApp(), window.location.origin);
 
 
 const Auth = () => {
@@ -92,7 +94,8 @@ const Auth = () => {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
+    const signIn = isNativeApp() ? nativeLovableAuth.signInWithOAuth : lovable.auth.signInWithOAuth;
+    const result = await signIn("google", {
       redirect_uri: getAuthRedirectOrigin(),
     });
     if (result.error) {
