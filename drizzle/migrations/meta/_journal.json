@@ -8,6 +8,13 @@
       "when": 1794400268607,
       "tag": "0000_add_yearly_sapling_goal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795278242647,
+      "tag": "0001_restrict_social_reads_to_signed_in_users",
+      "breakpoints": true
     }
   ]
 }
