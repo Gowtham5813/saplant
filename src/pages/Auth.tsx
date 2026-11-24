@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sprout, ArrowLeft } from "lucide-react";
+import { Browser } from "@capacitor/browser";
+import { Capacitor } from "@capacitor/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/contexts/AuthContext";
 import { getOAuthRedirectOrigin, NATIVE_OAUTH_BROKER_URL } from "@/lib/oauth-redirect";
+import {
+  buildNativeGoogleOAuthUrl,
+  createNativeOAuthState,
+  NATIVE_OAUTH_PENDING_STATE_KEY,
+} from "@/lib/native-oauth";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -94,17 +101,30 @@ const Auth = () => {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const signIn = isNativeApp() ? nativeLovableAuth.signInWithOAuth : lovable.auth.signInWithOAuth;
-    const result = await signIn("google", {
-      redirect_uri: getAuthRedirectOrigin(),
-    });
-    if (result.error) {
+    const isAndroidApp = Capacitor.getPlatform() === "android";
+    try {
+      if (isAndroidApp) {
+        const state = createNativeOAuthState();
+        localStorage.setItem(
+          NATIVE_OAUTH_PENDING_STATE_KEY,
+          JSON.stringify({ state, createdAt: Date.now() }),
+        );
+        await Browser.open({ url: buildNativeGoogleOAuthUrl(state) });
+        return;
+      }
+
+      const signIn = isNativeApp() ? nativeLovableAuth.signInWithOAuth : lovable.auth.signInWithOAuth;
+      const result = await signIn("google", {
+        redirect_uri: getAuthRedirectOrigin(),
+      });
+      if (result.error) return toast.error("Google sign-in failed");
+      if (!result.redirected) navigate("/app", { replace: true });
+    } catch {
+      if (isAndroidApp) localStorage.removeItem(NATIVE_OAUTH_PENDING_STATE_KEY);
+      toast.error("Google sign-in could not be started. Please try again.");
+    } finally {
       setLoading(false);
-      return toast.error("Google sign-in failed");
     }
-    if (result.redirected) return;
-    // Session set by helper; navigate to app (AuthContext will also redirect)
-    navigate("/app", { replace: true });
   };
 
   return (
